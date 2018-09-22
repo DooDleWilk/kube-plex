@@ -20,7 +20,7 @@ claimToken: ""
 timezone: Europe/London
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
 
 ingress:
   enabled: false
