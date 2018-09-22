@@ -31,7 +31,7 @@ transcodes work right now.
     kubectl apply -f StorageClasses/vsan-thin-disk-sc.yaml
 ```
 
-2) Define Persistent Volume Claims (as per declaration in charts/kube-plex/values.yaml)
+2) Define Persistent Volume Claims (as per declaration in [charts/kube-plex/values.yaml](https://github.com/DooDleWilk/kube-plex/blob/master/charts/kube-plex/values.yaml))
 
 ```bash
     kubectl apply \
