@@ -34,7 +34,9 @@ transcodes work right now.
 2) Define Persistent Volume Claims
 
 ```bash
-    kubectl apply -f PersistentVolumeClaims/plex-config-pvc.yaml \
+    kubectl apply \
+      --namespace plex \
+      -f PersistentVolumeClaims/plex-config-pvc.yaml \
       -f PersistentVolumeClaims/plex-data-pvc.yaml \
       -f PersistentVolumeClaims/plex-transcode-pvc.yaml \
       -f PersistentVolumeClaims/plex-master-pvc.yaml
