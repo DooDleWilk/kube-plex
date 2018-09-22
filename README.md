@@ -17,6 +17,7 @@ read your media!).
 
 * A persistent volume type that supports ReadWriteMany volumes (e.g. NFS,
 Amazon EFS)
+* A Kubernetes LoadBalancer type when declaring the Service
 * Your Plex Media Server *must* be configured to allow connections from
 unauthorized users for your pod network, else the transcode job is unable to
 report information back to Plex about the state of the transcode job. At some
@@ -42,6 +43,9 @@ transcodes work right now.
       -f PersistentVolumeClaims/plex-master-pvc.yaml
 ```
 
+3) Install MetalLB (or any other Load Balancer of your choice) if no LoadBalancer type available in your current Cluster
+
+    I would recommend this [guide](https://blog.inkubate.io/install-and-configure-metallb-as-a-load-balancer-for-kubernetes/), but feel free to pick another that suits you.
 
 ## Setup
 
@@ -66,20 +70,27 @@ obtained in step 1.
 This will deploy a scalable Plex Media Server instance that uses Kubernetes as
 a backend for executing transcode jobs.
 
-3) Access the Plex dashboard, either using `kubectl port-forward`, or using
-the services LoadBalancer IP (via `kubectl get service`), or alternatively use
-the ingress provisioned in the previous step (with `--set ingress.enabled=true`).
+3) Retrieve the IP assigned to the service plex-kube-plex
 
-4) Visit Settings->Server->Network and add your pod network subnet to the
-`List of IP addresses and networks that are allowed without auth` (near the
-bottom). For example, `10.100.0.0/16` is the subnet that pods in my cluster are
+```bash
+    kubectl describe service plex-kube-plex --namespace plex
+```
+
+4) Visit Settings->Server->Network (Click 'Show Advanced' if needed) and add
+your pod network subnet to the `List of IP addresses and networks that are allowed without auth`
+(near the bottom). For example, `10.100.0.0/16` is the subnet that pods in my cluster are
 assigned IPs from, so I enter `10.100.0.0/16` in the box.
+==> To find your, check the --cluster-cidr vallue in one of your K8s node in the /etc/kubernetes/manifests/kube-proxy.manifest file
+
+```bash
+    cat /etc/kubernetes/manifests/kube-proxy.manifest | grep "--cluster-cidr"
+```
 
 You should now be able to play media from your PMS instance - pods will be
 created to handle transcodes, and data automatically mounted in appropriately:
 
 ```bash
-➜  kubectl get po -n plex
+    kubectl get po -n plex
 NAME                              READY     STATUS    RESTARTS   AGE
 plex-kube-plex-75b96cdcb4-skrxr   1/1       Running   0          14m
 pms-elastic-transcoder-7wnqk      1/1       Running   0          8m
