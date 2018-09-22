@@ -25,13 +25,13 @@ transcodes work right now.
 
 ## Prerequisites Setup
 
-1) Define StorageClass
+1) Define Storage Class
 
 ```bash
     kubectl apply -f StorageClasses/vsan-thin-disk-sc.yaml
 ```
 
-2) Define Persistent Volume Claims
+2) Define Persistent Volume Claims (as per declaration in charts/kube-plex/values.yaml)
 
 ```bash
     kubectl apply \
@@ -54,15 +54,12 @@ This will be used to bind your new PMS instance to your own user account
 automatically.
 
 2) Deploy the Helm chart included in this repository using the claim token
-obtained in step 1. If you have pre-existing peristent volume claims for your
-media, you can specify its name with `--set persistence.data.claimName`. If not
-specified, a persistent volume will be automatically provisioned for you.
+obtained in step 1.
 
 ```bash
     helm install ./charts/kube-plex --name plex \
       --namespace plex \
       --set claimToken=[insert claim token here] \
-      --set persistence.data.claimName=existing-pms-data-pvc \
       --set ingress.enabled=true
 ```
 
