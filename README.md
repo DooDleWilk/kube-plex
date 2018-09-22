@@ -23,6 +23,24 @@ report information back to Plex about the state of the transcode job. At some
 point in the future this may change, but it is a required step in order to make
 transcodes work right now.
 
+## Prerequisites Setup
+
+1) Define StorageClass
+
+```bash
+    kubectl apply -f StorageClasses/vsan-thin-disk-sc.yaml
+```
+
+2) Define Persistent Volume Claims
+
+```bash
+    kubectl apply -f PersistentVolumeClaims/plex-config-pvc.yaml \
+      -f PersistentVolumeClaims/plex-data-pvc.yaml \
+      -f PersistentVolumeClaims/plex-transcode-pvc.yaml \
+      -f PersistentVolumeClaims/plex-master-pvc.yaml
+```
+
+
 ## Setup
 
 This guide will go through setting up a Plex Media Server instance on a
@@ -39,11 +57,11 @@ media, you can specify its name with `--set persistence.data.claimName`. If not
 specified, a persistent volume will be automatically provisioned for you.
 
 ```bash
-➜  helm install ./charts/kube-plex --name plex \
-    --namespace plex \
-    --set claimToken=[insert claim token here] \
-    --set persistence.data.claimName=existing-pms-data-pvc \
-    --set ingress.enabled=true
+    helm install ./charts/kube-plex --name plex \
+      --namespace plex \
+      --set claimToken=[insert claim token here] \
+      --set persistence.data.claimName=existing-pms-data-pvc \
+      --set ingress.enabled=true
 ```
 
 This will deploy a scalable Plex Media Server instance that uses Kubernetes as
